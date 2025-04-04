@@ -12,7 +12,7 @@ A basic x86 assembly kernel written in 12 hours at Dickinson's S25 Hackathon.
 *Wishful thinking*
 - [ ] Memory management
 
-*Pipe dream*
+*Pipe dream, for the future*
 - [ ] Premptive multitasking
 - [ ] Shell
 
@@ -23,7 +23,8 @@ A basic x86 assembly kernel written in 12 hours at Dickinson's S25 Hackathon.
 - https://www.felixcloutier.com/x86/ -The big boy
 
 **Basics**
-- https://mikeos.sourceforge.net/write-your-own-os.html -Very simple
+- https://mikeos.sourceforge.net/write-your-own-os.html -Good starting point
+- https://github.com/normalgamer/Assembly-OS -Simpler
 - http://www.osdever.net/tutorials/view/the-booting-process -More in depth
 - https://os.phil-opp.com/ -Not assembly, but very good job of explaining different parts and order
 - https://wiki.osdev.org/Bare_Bones
