@@ -12,7 +12,7 @@ A basic x86 assembly kernel written in 12 hours at Dickinson's S25 Hackathon.
 *Wishful thinking*
 - [ ] Memory management
 
-*Pipe dream*
+*Pipe dream, for the future*
 - [ ] Premptive multitasking
 - [ ] Shell
 
