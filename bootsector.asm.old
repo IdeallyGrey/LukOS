@@ -1,5 +1,14 @@
     BITS 16
 
+; Data
+
+;    text_string db 'Hello world!', 0
+
+
+
+
+; Main code
+
 start:
     ORG 0x7C00 ; Set initial offset to where BIOS puts us
 
@@ -10,51 +19,20 @@ start:
 
 
 	call vga_clear	; Clears screen
-;
-;    mov si, welcome_string  ; Put string position into SI
-;	call vga_print_string;
-
-
-; Prepare to enter Protected mode
-	cli ; disables interupts
-
-	xor ax, ax ; sets ax to null
-	mov ds, ax ; sets ds to ax (can't be set directly)
-
-	lgdt [gdt_desc] ; loads GDT table
-
-; Here we enter Protected mode
-	mov eax, cr0 ; Copies control register
-    or eax, 1 ; Sets lowest bit to 1, (which enables Protected mode)
-    mov cr0, eax ; Copies back
-
-    jmp 08h:clear_pipe ; Does a "long jump" to clear old 16-bit instructions
-[BITS 32]
-clear_pipe:
-    mov eax, gdt_data; Set stack segment
-    mov ds,eax
-    mov es,eax
-    mov fs,eax
-    mov gs,eax
-    mov ss,eax
-    mov esp, 0xffff ; Sets stack pointer
 
 
 
 
-;    call vga_clear	; Clears screen
 
 
-;    mov si, welcome_string  ; Put string position into SI
-;    call vga_print_string;
-
-
-hang:
-	jmp hang	; Jump here - infinite loop!
+    mov si, welcome_string  ; Put string position into SI
+	call vga_print_string; Call our string-printing routine
 
 
 
 
+
+	jmp $			; Jump here - infinite loop!
 
 
 
@@ -75,6 +53,7 @@ vga_clear:
     jmp .vga_clear_start
 .vga_clear_end:
     ret
+
 
 
 vga_print_byte: ; Print contents of SI to screen via VGA buffer
@@ -116,6 +95,7 @@ vga_print_byte: ; Print contents of SI to screen via VGA buffer
     ret
 
 
+
 vga_print_string: ; Print contents of SI to screen via VGA buffer
     push cx
     push ax
@@ -138,42 +118,8 @@ vga_print_string: ; Print contents of SI to screen via VGA buffer
     ret
 
 
-
-
-
-
-
-
-
-
-; Data
-
     welcome_string dw "Welcome to LukBoot! We're in Real Mode right now.", 0
 
-gdt: ; Global Description Table, for segmented memory
-gdt_null EQU $-gdt
-    dq 0 ; All 4 double words are null
-gdt_code EQU $-gdt
-    dw 0FFFFh ; Sets limit to 4G (max possible)
-    dw 0 ; Where it starts
-
-    db 0 ; Continuation of start
-    db 10011010b ; Type
-    db 11001111b
-    db 0
-gdt_data EQU $-gdt
-    dw 0FFFFh
-    dw 0
-
-    db 0
-    db 10010010b
-    db 11001111b
-    db 0
-gdt_end:
-
-gdt_desc:
-gdt_size   dw gdt_end-gdt-1
-gdt_base   dd gdt
 
 
 
