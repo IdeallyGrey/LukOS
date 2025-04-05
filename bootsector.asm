@@ -1,25 +1,53 @@
     BITS 16
 
+    jmp start
+
+; ---- Data ----
+
+    welcome_string dw "Welcome to LukOS! We are currently running in 32-bit Protected Mode.", 0
+
+gdt: ; Global Description Table - each entry 8 bytes, our two segments define the same area
+gdt_null EQU $-gdt ; first entry has to be null
+    dq 0
+gdt_code EQU $-gdt ; Code
+    dw 0FFFFh ; Sets limit to 4G (max possible)
+    dw 0 ; Where it starts
+
+    db 0 ; Continuation of start
+    db 10011010b ; Type
+    db 11001111b
+    db 0
+gdt_data EQU $-gdt ; Data and stack
+    dw 0FFFFh
+    dw 0
+
+    db 0
+    db 10010010b
+    db 11001111b
+    db 0
+gdt_end:
+
+gdt_desc: ; Used by NASM to find address
+gdt_size   dw gdt_end-gdt-1
+gdt_base   dd gdt
+
+
+; ---- Bootloader ----
+
 start:
     ORG 0x7C00 ; Set initial offset to where BIOS puts us
 
-    mov ax, 07C0h ; Set stack segment
-    add ax, 288
-    mov ss, ax
-    mov sp, 4096 ; Set stack pointer
+; Needed if we want to do stuff before entering protected mode, otherwise not nessesary
+;    mov ax, 07C0h ; Set stack segment
+;    add ax, 288
+;    mov ss, ax
+;    mov sp, 4096 ; Set stack pointer
 
-
-	call vga_clear	; Clears screen
-;
-;    mov si, welcome_string  ; Put string position into SI
-;	call vga_print_string;
-
-
-; Prepare to enter Protected mode
+; Prepare to enter Protected mode ------
 	cli ; disables interupts
 
-	xor ax, ax ; sets ax to null
-	mov ds, ax ; sets ds to ax (can't be set directly)
+	xor ax, ax
+	mov ds, ax ; sets ds to null (ds can't be set directly)
 
 	lgdt [gdt_desc] ; loads GDT table
 
@@ -41,12 +69,15 @@ clear_pipe:
 
 
 
-
-;    call vga_clear	; Clears screen
-
-
-;    mov si, welcome_string  ; Put string position into SI
-;    call vga_print_string;
+;mov byte [0x0b8000], 0
+    call vga_clear	; Clears screen
+;mov ecx, 0x0b8000
+;mov edi, ecx
+;inc edi
+;inc edi
+;mov byte [edi], 0
+    mov si, welcome_string  ; Put string position into SI
+    call vga_print_string;
 
 
 hang:
@@ -58,83 +89,71 @@ hang:
 
 
 
-vga_clear:
-    mov dx, 0xb800 ; VGA buffer
-    mov es, dx ; Extra Segment, has to be loaded from register
 
-    mov cx, 0
+
+vga_clear:
+    push edi
+    push ecx
+
+    mov edi, 0xb8000 ; VGA buffer
+    mov ecx, 0xb8000
+    add ecx, 4000 ; 80*25*2 = End of VGA buffer
 .vga_clear_start:
-    cmp cx, 4000 ; 80*25*2
-    je .vga_clear_end
-	mov di, cx
-    mov byte [es:di], 0
-    inc cx
-    mov di, cx
-    mov byte [es:di], 0 ; ()()(text)(back)
-    inc cx
+    cmp edi, ecx
+    je .vga_clear_end ; Triggers when reaches end
+    mov byte [edi], 0 ; Blank
+    inc edi
+    mov byte [edi], 0 ; Black background
+    inc edi
     jmp .vga_clear_start
 .vga_clear_end:
+
+    pop ecx
+    pop edi
     ret
 
 
 vga_print_byte: ; Print contents of SI to screen via VGA buffer
-    push dx
-    push es
-    push di
-    push cx
-    push ax
+    push edi
+    push ecx
 
-    mov dx, 0xb800 ; VGA buffer
-    mov es, dx ; Extra Segment, has to be loaded from register
-.vga_print_byte_start:
-    mov ax, si
-
-    push ax
-    mov cx, 0
+    mov edi, 0xb8000 ; VGA buffer
 .vga_print_byte_find_end:
-    mov di, cx
-    mov ax, [es:di]
-    cmp ax, 0
+    mov ecx, [edi]
+    cmp ecx, 0
     je .vga_print_byte_find_end_done
-    inc cx
+    inc edi
     jmp .vga_print_byte_find_end
 
 .vga_print_byte_find_end_done:
-    pop ax
+    mov eax, esi
+    mov byte [edi], al
+    inc edi
+    mov byte [edi], 0x1f
 
-    mov di, cx
-    mov byte [es:di], al
-    inc cx
-    mov di, cx
-    mov byte [es:di], 0x1f
-
-    pop ax
-    pop cx
-    pop di
-    pop es
-    pop dx
+    pop ecx
+    pop edi
     ret
 
 
 vga_print_string: ; Print contents of SI to screen via VGA buffer
-    push cx
-    push ax
+
 
 .vga_print_string_start:
     lodsb ; Loads a single byte from SI to AL
     cmp al, 0 ; If 0, stop
     je .vga_print_string_done
 
-    push si
-    mov si, ax
+    push esi
+    mov esi, eax
     call vga_print_byte
-    pop si
+    pop esi
 
     jmp .vga_print_string_start
 
 .vga_print_string_done:
-    pop ax
-    pop cx
+
+
     ret
 
 
@@ -143,37 +162,6 @@ vga_print_string: ; Print contents of SI to screen via VGA buffer
 
 
 
-
-
-
-; Data
-
-    welcome_string dw "Welcome to LukBoot! We're in Real Mode right now.", 0
-
-gdt: ; Global Description Table, for segmented memory
-gdt_null EQU $-gdt
-    dq 0 ; All 4 double words are null
-gdt_code EQU $-gdt
-    dw 0FFFFh ; Sets limit to 4G (max possible)
-    dw 0 ; Where it starts
-
-    db 0 ; Continuation of start
-    db 10011010b ; Type
-    db 11001111b
-    db 0
-gdt_data EQU $-gdt
-    dw 0FFFFh
-    dw 0
-
-    db 0
-    db 10010010b
-    db 11001111b
-    db 0
-gdt_end:
-
-gdt_desc:
-gdt_size   dw gdt_end-gdt-1
-gdt_base   dd gdt
 
 
 
