@@ -4,8 +4,9 @@ A basic x86 assembly kernel written in 12 hours at Dickinson's S25 Hackathon.
 ## Goals
 
 *Realistic*
-- [ ] Boot
-- [ ] Print text via BIOS
+- [X] Boot
+- [X] Print text via BIOS
+- [ ] Print text via VGA
 - [ ] Protected mode 
 - [ ] Exceptions and interupts (timer, keyboard)
 
