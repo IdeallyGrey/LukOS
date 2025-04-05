@@ -2,7 +2,7 @@
 
 ; Data
 
-    text_string db 'Hello world!', 0
+;    text_string db 'Hello world!', 0
 
 
 
@@ -18,11 +18,18 @@ start:
     mov sp, 4096 ; Set stack pointer
 
 
-
 	call vga_clear	; Clears screen
 
-    mov si, text_string	; Put string position into SI
+
+
+
+
+
+    mov si, welcome_string  ; Put string position into SI
 	call vga_print_string; Call our string-printing routine
+
+
+
 
 
 	jmp $			; Jump here - infinite loop!
@@ -109,6 +116,10 @@ vga_print_string: ; Print contents of SI to screen via VGA buffer
     pop ax
     pop cx
     ret
+
+
+    welcome_string dw "Welcome to LukBoot! We're in Real Mode right now.", 0
+
 
 
 

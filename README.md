@@ -21,6 +21,7 @@ A basic x86 assembly kernel written in 12 hours at Dickinson's S25 Hackathon.
 
 **ASM**
 - https://en.wikipedia.org/wiki/X86_instruction_listings -Quick and easy
+- https://en.wikibooks.org/wiki/X86_Assembly/X86_Architecture -Info
 - https://www.felixcloutier.com/x86/ -The big boy
 
 **Basics**
