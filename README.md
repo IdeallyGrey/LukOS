@@ -20,7 +20,6 @@ The greatest challenge was the memory segmenting involved in switching to Protec
 Seeing the blue color on the screen was an aha! moment for me, and I was proud of that. I am coming away from this Hackathon with both a slightly deeper understanding of, and much greater respect for, how low level programs like kernels work.
 
 ## What's next?
-*What's next for the project? Are there any improvements, features, or long-term goals for this project? How might you go about doing so?*
 The next step would be implement handling for exceptions and interrupts, thought that looks to have quite a learning curve. Maybe some day.
 
 ## Try it out
