@@ -77,9 +77,7 @@ clear_pipe:
 
 
 
-
-
-
+; Fibonacci
     mov ecx, 0 ; prev
     mov eax, 1 ; current
 loop:
@@ -94,9 +92,6 @@ loop:
     mov ecx, edx ; update prev to what was current
     jmp loop
 loop_end:
-
-
-
 
 
 
@@ -119,7 +114,7 @@ vga_print_integer: ; Recursive function to print the integer passed in ESI via t
     mov eax, esi ; Set dividend
     mov ecx, 10       ; set to divide by 10
     mov edx, 0        ; clear dividend
-    div ecx           ; EAX = 0x80, EDX = 0x3
+    div ecx           ; EAX has quotent, EDX has remainder
 
     cmp eax, 0 ; If nothing left, skip
     je .vga_print_integer_done
@@ -213,9 +208,6 @@ vga_print_string: ; Print string in ESI to screen via VGA buffer
 
     pop eax
     ret
-
-
-
 
 
 
