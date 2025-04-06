@@ -2,10 +2,7 @@
 ### *LukOS was my attempt to write a basic kernel in x86 assembly. It is capable of booting, entering Protected Mode, and printing to the console.*
 **Team:** Lukas Hamm
 
-**Submission video:** *Link to video.*
-> ⏱️ The video should be 5 minutes or less. In the video, you should include the project inspiration, what it does, and a demo showcasing the key features.
-
-> 🎥 The easiest way to make a video here would be to use OBS or Zoom for screen recording. You can upload the video as an unlisted video on YouTube and add the link here.
+**Submission video:** [Link](https://immich.ideallygrey.uk/share/EO7G3jshKlFMZEr5R7Jhfl9MbV7VcQAfAfZHmERI5cHovynxDnNq4TGgW-kgx0TK5KI/photos/9da8da35-6139-4c22-b86d-f9837001a403)
 
 ## Inspiration
 This project was inspired from my Computing Abstractions course, where we are currently in the OS unit! Additionally, I had previously come accross [a blog for writing an OS in Rust](https://os.phil-opp.com) by Philipp Oppermann, which had piqued my interest in the topic of OS devleopment. Though the vast majority of it went over my head at the time, I was pleasantly suprised when the lectures in class mentioned topics I'd read about before.
